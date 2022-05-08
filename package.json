@@ -1,0 +1,35 @@
+{
+  "name": "img-bot",
+  "version": "1.0.0",
+  "description": "用于图片生成",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "dev-local": "NODE_ENV=local nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/better-world-labs/img-bot.git"
+  },
+  "author": "degfy",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/better-world-labs/img-bot/issues"
+  },
+  "homepage": "https://github.com/better-world-labs/img-bot#readme",
+  "dependencies": {
+    "ali-oss": "^6.17.1",
+    "config": "^3.3.7",
+    "generic-pool": "^3.8.2",
+    "html-escape": "^2.0.0",
+    "is-type-of": "^1.2.1",
+    "koa": "^2.13.4",
+    "koa-body": "^5.0.0",
+    "puppeteer": "^13.7.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}

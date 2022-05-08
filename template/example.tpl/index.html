@@ -1,0 +1,130 @@
+<body>
+    <div class="content">
+        <div class="header">
+            <div class="left">
+                <div class="avator"></div>
+                <div class="name">${username}</div>
+            </div>
+            <div class="right">
+                <span style="color: #d2d2d2"
+                    >捐赠积分<span style="color: #ff7461"
+                        >${donationPoints}</span
+                    ></span
+                >
+            </div>
+        </div>
+        <div class="core">
+            <span
+                >支持 <span style="color: #ff7461">${content}</span> 项目</span
+            >
+        </div>
+        <div class="data">
+            <div class="left">
+                已收到积分:
+                <span style="color: #ff7461">${receivedPoints}</span>
+            </div>
+            <div class="right">
+                尚缺: <span style="color: #ff7461">${lackPoints}</span>
+            </div>
+        </div>
+        <div class="minicode"></div>
+    </div>
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: SimHei, FiraCode-Retina, 黑体, sans-serif;
+            background-color: transparent;
+        }
+
+        .content {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            /* background-image: url("${local}/share.png"); */
+            background-image: url("share.png");
+            background-size: cover;
+            display: table;
+        }
+
+        .content .core {
+            position: absolute;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            box-sizing: border-box;
+            padding: 0px 140px;
+            height: 210px;
+            line-height: 60px;
+            font-size: 4vw;
+            top: 980px;
+            word-break: break-all;
+        }
+
+        .header {
+            position: absolute;
+            display: flex;
+            justify-content: space-between;
+            width: 100vw;
+            box-sizing: border-box;
+            align-items: center;
+            padding: 10vw;
+            top: 40vh;
+            font-size: 4vw;
+        }
+
+        .header .left {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            width: 40vw;
+        }
+
+        .header .avator {
+            background-color: red;
+            background-image: url("${avatar}");
+            background-size: cover;
+            border-radius: 50%;
+            width: 110px;
+            height: 110px;
+        }
+
+        .header .name {
+            margin-left: 2vw;
+        }
+
+        .data {
+            display: flex;
+            justify-content: flex-start;
+            position: absolute;
+            width: 100vw;
+            font-size: 3.5vw;
+            justify-content: space-between;
+            padding: 0 15vw;
+            box-sizing: border-box;
+            top: 77.5vh;
+        }
+        .data .right {
+            margin-right: -7vw;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: flex-start;
+            min-width: 26vw;
+        }
+        .minicode {
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            background-image: url("${minicode}");
+            background-size: cover;
+            width: 20vw;
+            height: 20vw;
+            position: absolute;
+            bottom: 2.5vh;
+            right: 5vw;
+        }
+    </style>
+</body>
