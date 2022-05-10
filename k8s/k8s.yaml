@@ -48,7 +48,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: __NODE_NAME__-config
+            name: __APP_NAME__-config
 ---
 apiVersion: v1
 kind: Service
