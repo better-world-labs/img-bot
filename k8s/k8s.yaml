@@ -1,0 +1,66 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: __APP_NAME__
+  namespace: __NS__
+
+spec:
+  replicas: __POD_COUNT__
+  minReadySeconds: 10 #容器稳定运行10s才算成功启动
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 2
+  selector:
+    matchLabels:
+      app: __APP_NAME__
+  template:
+    metadata:
+      labels:
+        app: __APP_NAME__
+
+    spec:
+      imagePullSecrets:
+        - name: docker-reg-secret
+      containers:
+        - name: __APP_NAME__
+          image: __APP_IMAGE__
+          ports:
+            - containerPort: 8080
+              name: web
+
+          #CPU内存限制
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: 500m
+              memory: 1000Mi
+          
+          volumeMounts:
+            - name: config
+              mountPath: /app/config/__ENV__.js
+              subPath: __ENV__.js
+
+      volumes:
+        - name: config
+          configMap:
+            name: __NODE_NAME__-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: __APP_NAME__
+  namespace: __NS__
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: __APP_NAME__
+  type: ClusterIP

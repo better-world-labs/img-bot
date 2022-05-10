@@ -1,0 +1,62 @@
+variables:
+  VERSION: ${CI_COMMIT_SHORT_SHA}
+  APP_NAME: img-bot
+  APP_NS: star
+
+stages:
+  - build
+  - deploy
+
+default:
+  tags:
+    - docker
+
+before_script:
+  - echo "Build on $CI_COMMIT_REF_NAME"
+  - ENV=$CI_COMMIT_REF_NAME
+  - POD_COUNT=1 #开发环境、测试环境，只保留一个节点
+  - if [[ "$CI_COMMIT_REF_NAME" == "master" ]]; then
+  - ENV="prod"
+  - POD_COUNT=2 #生产环境，保留2个节点
+  - fi
+  - NS="$APP_NS-$ENV"
+
+build:
+  stage: build
+  image: registry.cn-hangzhou.aliyuncs.com/openviewtech/docker:19.03.12
+  only:
+    - dev
+    - test
+    - master
+  script:
+    - echo "172.19.75.65 gitlab.openviewtech.com" >> /etc/hosts
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+    - DOCKER_BUILDKIT=1 docker build -t ${CI_REGISTRY_IMAGE}:${ENV}-${VERSION} -t ${CI_REGISTRY_IMAGE}:${ENV}-latest --build-arg ENVIRONMENT=${ENV} .
+    - docker push  ${CI_REGISTRY_IMAGE}:${ENV}-${VERSION}
+    - docker push  ${CI_REGISTRY_IMAGE}:${ENV}-latest
+
+deploy:
+  stage: deploy
+  image:
+    name: registry.cn-hangzhou.aliyuncs.com/openviewtech/kubectl:1.23
+    entrypoint: [""]
+  only:
+    - test
+    - dev
+  script:
+    - mkdir -p $HOME/.kube
+    - cp $KUBE_CONFIG $HOME/.kube/config
+    - sed -i "s/__POD_COUNT__/$POD_COUNT/" k8s/k8s.yaml
+    - sed -i "s/__ENV__/$ENV/" k8s/k8s.yaml
+    - sed -i "s/__NS__/$NS/" k8s/k8s.yaml
+    - sed -i "s#__APP_IMAGE__#$CI_REGISTRY_IMAGE:$ENV-$VERSION#" k8s/k8s.yaml
+    - sed -i "s#__APP_NAME__#$APP_NAME#" k8s/k8s.yaml
+    - kubectl apply -f k8s/k8s.yaml
+    - kubectl rollout status deployment $APP_NAME -n $NS
+
+master_deploy:
+  stage: deploy
+  when: manual # 生产环境手动发布
+  only:
+    - master
+  extends: deploy
